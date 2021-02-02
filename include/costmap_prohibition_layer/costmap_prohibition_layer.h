@@ -42,6 +42,7 @@
 #include <XmlRpcException.h>
 #include <tf/transform_datatypes.h>
 #include <mutex>
+#include <geometry_msgs/Polygon.h>
 #include <geometry_msgs/PoseArray.h>
 #include <stdlib.h>
 #include <ros/ros.h>
@@ -192,6 +193,8 @@ private:
  *                    false if it wasn't
   */
   bool getPoint(XmlRpc::XmlRpcValue& val, geometry_msgs::Point& point);
+
+  void obstacleCB(const  geometry_msgs::Polygon::ConstPtr& msg);
 
   dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>* _dsrv;            //!< dynamic_reconfigure server for the costmap
   std::mutex _data_mutex;                                                       //!< mutex for the accessing _prohibition_points and _prohibition_polygons

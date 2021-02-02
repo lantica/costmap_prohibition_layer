@@ -75,17 +75,29 @@ void CostmapProhibitionLayer::onInitialize()
   
   // reading the prohibition areas out of the namespace of this plugin!
   // e.g.: "move_base/global_costmap/prohibition_layer/prohibition_areas"
-  std::string params = "prohibition_areas";
-  if (!parseProhibitionListFromYaml(&nh, params))
-    ROS_ERROR_STREAM("Reading prohibition areas from '" << nh.getNamespace() << "/" << params << "' failed!");
+  //std::string params = "prohibition_areas";
+  //if (!parseProhibitionListFromYaml(&nh, params))
+  //  ROS_ERROR_STREAM("Reading prohibition areas from '" << nh.getNamespace() << "/" << params << "' failed!");
   
   _fill_polygons = true;
   nh.param("fill_polygons", _fill_polygons, _fill_polygons);
-  
+ 
+  ros::Subscriber obsSub = nh.subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
   // compute map bounds for the current set of prohibition areas.
-  computeMapBounds();
+  //computeMapBounds();
   
   ROS_INFO("CostmapProhibitionLayer initialized.");
+}
+
+void CostmapProhibitionLayer::obstacleCB(const geometry_msgs::Polygon::ConstPtr& msg) {
+    std::lock_guard<std::mutex> l(_data_mutex);
+
+    std::vector<geometry_msgs::Point> vector_to_add;
+
+    //ROS_WARN(msg->points.size());
+
+    // compute map bounds for the current set of prohibition areas.
+    computeMapBounds();
 }
 
 void CostmapProhibitionLayer::reconfigureCB(CostmapProhibitionLayerConfig &config, uint32_t level)
