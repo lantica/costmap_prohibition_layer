@@ -58,7 +58,7 @@ CostmapProhibitionLayer::~CostmapProhibitionLayer()
 
 void CostmapProhibitionLayer::onInitialize()
 {
-  ros::NodeHandle nh("~/" + name_);
+  ros::NodeHandle nh("~/" + name_), g_nh;
   current_ = true;
 
   _dsrv = new dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>(nh);
@@ -82,7 +82,7 @@ void CostmapProhibitionLayer::onInitialize()
   _fill_polygons = true;
   nh.param("fill_polygons", _fill_polygons, _fill_polygons);
  
-  ros::Subscriber obsSub = nh.subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
+  ros::Subscriber obsSub = g_nh.subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
   // compute map bounds for the current set of prohibition areas.
   //computeMapBounds();
   
