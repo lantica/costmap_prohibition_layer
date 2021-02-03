@@ -50,7 +50,7 @@
 #include <costmap_2d/layered_costmap.h>
 #include <costmap_prohibition_layer/CostmapProhibitionLayerConfig.h>
 #include <dynamic_reconfigure/server.h>
-
+#include <string>
 #include <unordered_map>
 
 namespace costmap_prohibition_layer_namespace
@@ -198,6 +198,7 @@ private:
 
   ros::NodeHandle* _nh;
   ros::Subscriber sub_;
+  std::string _obstacle_topic;
   dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>* _dsrv;            //!< dynamic_reconfigure server for the costmap
   std::mutex _data_mutex;                                                       //!< mutex for the accessing _prohibition_points and _prohibition_polygons
   double _costmap_resolution;                                                   //!< resolution of the overlayed costmap to create the thinnest line out of two points

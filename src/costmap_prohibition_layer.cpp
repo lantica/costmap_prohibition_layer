@@ -84,8 +84,10 @@ void CostmapProhibitionLayer::onInitialize()
   
   _fill_polygons = true;
   _nh->param("fill_polygons", _fill_polygons, _fill_polygons);
- 
-  sub_ = _nh->subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
+  _obstacle_topic = "/nav/obstacles";
+  _nh->param("obstacle_topic", _obstacle_topic, _obstacle_topic);
+
+  sub_ = _nh->subscribe(_obstacle_topic, 1, &CostmapProhibitionLayer::obstacleCB, this);
   // compute map bounds for the current set of prohibition areas.
   //computeMapBounds();
   
@@ -97,7 +99,8 @@ void CostmapProhibitionLayer::obstacleCB(const geometry_msgs::Polygon::ConstPtr&
 
     std::vector<geometry_msgs::Point> vector_to_add;
 
-    //ROS_WARN(msg->points.size());
+    ROS_ERROR_STREAM("[CostmapProhibitionLayer] " << std::to_string(msg->points.size()));
+    //ROS_WARN("[CostmapProhibitionLayer] " + std::to_string(msg->points.size()));
 
     // compute map bounds for the current set of prohibition areas.
     computeMapBounds();
