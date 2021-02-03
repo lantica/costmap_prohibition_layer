@@ -196,6 +196,8 @@ private:
 
   void obstacleCB(const  geometry_msgs::Polygon::ConstPtr& msg);
 
+  ros::NodeHandle* _nh;
+  ros::Subscriber sub_;
   dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>* _dsrv;            //!< dynamic_reconfigure server for the costmap
   std::mutex _data_mutex;                                                       //!< mutex for the accessing _prohibition_points and _prohibition_polygons
   double _costmap_resolution;                                                   //!< resolution of the overlayed costmap to create the thinnest line out of two points

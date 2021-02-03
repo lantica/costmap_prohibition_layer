@@ -46,7 +46,7 @@ using costmap_2d::LETHAL_OBSTACLE;
 namespace costmap_prohibition_layer_namespace
 {
     
-CostmapProhibitionLayer::CostmapProhibitionLayer() : _dsrv(NULL)
+CostmapProhibitionLayer::CostmapProhibitionLayer() : _dsrv(NULL), _nh(NULL)
 {
 }
 
@@ -54,14 +54,17 @@ CostmapProhibitionLayer::~CostmapProhibitionLayer()
 {
     if (_dsrv!=NULL)
         delete _dsrv;
+    if (_nh!=NULL)
+        delete _nh;
 }
 
 void CostmapProhibitionLayer::onInitialize()
 {
-  ros::NodeHandle nh("~/" + name_);
+  _nh = new ros::NodeHandle ("~/" + name_);
+  //ros::NodeHandle nh("~/" + name_);
   current_ = true;
 
-  _dsrv = new dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>(nh);
+  _dsrv = new dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>(*_nh);
   dynamic_reconfigure::Server<CostmapProhibitionLayerConfig>::CallbackType cb =
       boost::bind(&CostmapProhibitionLayer::reconfigureCB, this, _1, _2);
   _dsrv->setCallback(cb);
@@ -80,9 +83,9 @@ void CostmapProhibitionLayer::onInitialize()
   //  ROS_ERROR_STREAM("Reading prohibition areas from '" << nh.getNamespace() << "/" << params << "' failed!");
   
   _fill_polygons = true;
-  nh.param("fill_polygons", _fill_polygons, _fill_polygons);
+  _nh->param("fill_polygons", _fill_polygons, _fill_polygons);
  
-  sub_ = nh.subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
+  sub_ = _nh->subscribe("obstacles", 1, &CostmapProhibitionLayer::obstacleCB, this);
   // compute map bounds for the current set of prohibition areas.
   //computeMapBounds();
   
